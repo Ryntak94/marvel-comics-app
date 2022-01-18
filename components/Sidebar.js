@@ -46,6 +46,7 @@ const Sidebar = (props)  =>  {
                 placeholder="Limit Results"></Input>
             <Submit onClick={() =>  {
                 console.log("hello")
+                console.log(props.newComics())
                 props.newComics()}}>Submit</Submit>
         </Container>
     )

@@ -226,6 +226,7 @@ export default function Home() {
     {
       onCompleted: (data) =>  {
         const newSubgraph = formatData(data)
+        console.log("here2")
         setGraphData({
           nodes: _.uniqBy([...newSubgraph.nodes], "id"),
           links: _.uniqBy([...newSubgraph.links], "id")
