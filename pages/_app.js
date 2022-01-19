@@ -8,7 +8,7 @@ import {
 
 const createApolloCliennt = ()  =>  {
   const link = new HttpLink({
-    uri: 'http://localhost:3000/api/graphql'
+    uri: 'https://marvel-app-graphql-layer.herokuapp.com/'
   })
 
   return new ApolloClient({
