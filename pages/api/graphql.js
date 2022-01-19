@@ -100,7 +100,7 @@ export default async function handler(req, res) {
     await startServer
 
     await apolloServer.createHandler({
-        path: "localhost:/api/graphql"
+        path: "/api/graphql"
     })(req, res)
 }
 

@@ -40,12 +40,6 @@ const query = gql`
           title
           marvelId
           __typename
-          creators(where: {role_CONTAINS: "writer"})  {
-            title
-            role
-            marvelId
-            __typename
-          }
         }
       }
     }
@@ -78,17 +72,6 @@ const newQuery = gql`
           title
           marvelId
           __typename
-          next_issue {
-            title
-            marvelId
-            __typename
-            creators(where: {role_CONTAINS: "writer"})  {
-              title
-              role
-              marvelId
-              __typename
-            }
-          }
         }
       }
     }
@@ -187,22 +170,22 @@ const formatData = (data) =>  {
             id: `${comic.marvelId}${comic.next_issue.marvelId}NEXT_ISSUE`
           })
 
-          if(comic.next_issue.creators.length > 0)  {
-            nodes.push({
-              id: comic.next_issue.creators[0].marvelId,
-              name: comic.next_issue.creators[0].title,
-              title: `${comic.next_issue.creators[0].title} (${comic.next_issue.creators[0].role})`,
-              role: comic.next_issue.creators[0].role,
-              __typename: comic.next_issue.creators[0].__typename
-            })
+          // if(comic.next_issue.creators.length > 0)  {
+          //   nodes.push({
+          //     id: comic.next_issue.creators[0].marvelId,
+          //     name: comic.next_issue.creators[0].title,
+          //     title: `${comic.next_issue.creators[0].title} (${comic.next_issue.creators[0].role})`,
+          //     role: comic.next_issue.creators[0].role,
+          //     __typename: comic.next_issue.creators[0].__typename
+          //   })
 
-            links.push({
-              source: comic.next_issue.marvelId,
-              target: comic.next_issue.creators[0].marvelId,
-              label: 'CREATED_BY',
-              id: `${comic.next_issue.marvelId}${comic.next_issue.creators[0].marvelId}CREATED_BY`
-            })
-          }
+          //   links.push({
+          //     source: comic.next_issue.marvelId,
+          //     target: comic.next_issue.creators[0].marvelId,
+          //     label: 'CREATED_BY',
+          //     id: `${comic.next_issue.marvelId}${comic.next_issue.creators[0].marvelId}CREATED_BY`
+          //   })
+          // }
         }
 
       })

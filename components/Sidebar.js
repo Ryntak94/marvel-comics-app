@@ -47,7 +47,7 @@ const Sidebar = (props)  =>  {
             <Submit onClick={() =>  {
                 console.log("hello")
                 console.log(props.newComics())
-                props.newComics()}}>Submit</Submit>
+                props.newComics({variables: {limit: props.comicLimit, comicTitle: props.comicTitle}})}}>Submit</Submit>
         </Container>
     )
 }
