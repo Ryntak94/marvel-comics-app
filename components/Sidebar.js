@@ -72,7 +72,7 @@ const Sidebar = (props)  =>  {
                 <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Captain America'}})}}>{'Captain America'}</WhiteOption>
                 <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Captain Marvel'}})}}>{'Captain Marvel'}</WhiteOption>
                 <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Fantastic Four'}})}}>{'Fantastic Four'}</WhiteOption>
-                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Hulk'}})}}>{'Fantastic Four'}</WhiteOption>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Hulk'}})}}>{'Hulk'}</WhiteOption>
             </Suggestions>
         </Container>
     )
