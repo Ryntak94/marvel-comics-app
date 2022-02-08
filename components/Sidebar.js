@@ -28,10 +28,32 @@ const Submit = styled.div`
         cursor: pointer;
     }
 `
+const White = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: snow;
+`
+const Suggestions = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+`
+const WhiteOption = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: snow;
+    :hover {
+        cursor: pointer;
+    }
+`
 
 const Sidebar = (props)  =>  {
     return (
         <Container>
+            <White>{'Currently case sensitive'}</White>
             <Input 
                 onChange={(e) => {
                     props.setComicTitle(e.target.value)
@@ -42,6 +64,15 @@ const Sidebar = (props)  =>  {
                 console.log("hello")
                 console.log(props.newComics())
                 props.newComics({variables: {comicTitle: props.comicTitle}})}}>Submit</Submit>
+            <Suggestions>
+                <White>{'Suggestions:'}</White>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Spider-Man'}})}}>{'Spider-Man'}</WhiteOption>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Venom'}})}}>{'Venom'}</WhiteOption>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Iron Man'}})}}>{'Iron Man'}</WhiteOption>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Captain America'}})}}>{'Captain America'}</WhiteOption>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Captain Marvel'}})}}>{'Captain Marvel'}</WhiteOption>
+                <WhiteOption onClick={()=>{props.newComics({variables: {comicTitle: 'Fantastic Four'}})}}>{'Fantastic Four'}</WhiteOption>
+            </Suggestions>
         </Container>
     )
 }
