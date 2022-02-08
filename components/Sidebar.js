@@ -39,6 +39,7 @@ const Suggestions = styled.div`
     flex-direction: column;
     justify-content: start;
     align-items: center;
+    height: 50%;
 `
 const WhiteOption = styled.div`
     display: flex;
