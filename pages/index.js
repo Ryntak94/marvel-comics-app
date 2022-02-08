@@ -33,6 +33,11 @@ const query = gql`
       title
       __typename
     }
+    characters {
+      marvelId
+      title
+      __typename
+    }
   }
 }
 `
@@ -43,10 +48,20 @@ const newQuery = gql`
       title
       marvelId
       __typename
+      characters {
+        title
+        marvelId
+        __typename
+      }
       next_issue {
         title
         marvelId
         __typename
+        characters {
+          title
+          marvelId
+          __typename
+        }
       }
       creators(where: {role_CONTAINS: "writer"}) {
         title
@@ -70,6 +85,11 @@ const expandQuery = {
         title
         marvelId
         __typename
+        characters {
+          title
+          marvelId
+          __typename
+        }
         next_issue {
           title
           marvelId
@@ -111,6 +131,11 @@ const expandQuery = {
         title
         marvelId
         __typename
+        characters {
+          title
+          marvelId
+          __typename
+        }
         next_issue {
           title
           marvelId
@@ -120,6 +145,20 @@ const expandQuery = {
     }
   }
   `,
+  expandCharacter: gql`
+  query newCharacter($characterName: String) {
+    characters(where: {title_CONTAINS: $characterName}) {
+      title
+      marvelId
+      __typename
+      comics(options: {limit: 1000}) {
+        title
+        marvelId
+        __typename
+      }
+    }
+  }
+  `
 }
 
 const NoSSRForceGraph = dynamic(  ()  => import('../lib/NoSSRForceGraph'), { ssr: false })
@@ -152,6 +191,38 @@ const formatData = (data) =>  {
           target: c.next_issue.marvelId,
           label: 'NEXT_ISSUE',
           id: `${c.marvelId}${c.next_issue.marvelId}NEXT_ISSUE`
+        })
+
+        if(c.next_issue.characters) {
+          c.next_issue.characters.forEach(char  =>  {
+            nodes.push({
+              id: char.marvelId,
+              title: char.title,
+              __typename: char.__typename
+            })
+            links.push({
+              source: char.marvelId,
+              target: c.next_issue.marvelId,
+              label: 'CHARACTER_IN',
+              id: `${char.marvelId}${c.next_issue.marvelId}CHARACTER_IN`
+            })
+          })
+        }
+      }
+
+      if(c.characters) {
+        c.characters.forEach(char  =>  {
+          nodes.push({
+            id: char.marvelId,
+            title: char.title,
+            __typename: char.__typename
+          })
+          links.push({
+            source: char.marvelId,
+            target: c.marvelId,
+            label: 'CHARACTER_IN',
+            id: `${char.marvelId}${c.marvelId}CHARACTER_IN`
+          })
         })
       }
   
@@ -211,8 +282,38 @@ const formatData = (data) =>  {
                 label: 'NEXT_ISSUE',
                 id: `${comic.marvelId}${comic.next_issue.marvelId}NEXT_ISSUE`
               })
+              if(comic.next_issue.characters) {
+                comic.next_issue.characters.forEach(char  =>  {
+                  nodes.push({
+                    id: char.marvelId,
+                    title: char.title,
+                    __typename: char.__typename
+                  })
+                  links.push({
+                    source: char.marvelId,
+                    target: comic.next_issue.marvelId,
+                    label: 'CHARACTER_IN',
+                    id: `${char.marvelId}${comic.next_issue.marvelId}CHARACTER_IN`
+                  })
+                })
+              }
             }
-    
+            
+            if(comic.characters) {
+              comic.characters.forEach(char  =>  {
+                nodes.push({
+                  id: char.marvelId,
+                  title: char.title,
+                  __typename: char.__typename
+                })
+                links.push({
+                  source: char.marvelId,
+                  target: comic.marvelId,
+                  label: 'CHARACTER_IN',
+                  id: `${char.marvelId}${comic.marvelId}CHARACTER_IN`
+                })
+              })
+            }
           })
         }
       }
@@ -297,6 +398,44 @@ const formatData = (data) =>  {
       }
     })
   }
+  if(data.characters) {
+    data.characters.forEach(char  =>  {
+      nodes.push({
+        id: char.marvelId,
+        title: char.title,
+        __typename: char.__typename
+      })
+      if(char.comics) {
+        char.comics.forEach(comic =>  {
+          nodes.push({
+            id: comic.marvelId,
+            title: comic.title,
+            __typename: comic.__typename
+          })
+          links.push({
+            source: char.marvelId,
+            target: comic.marvelId,
+            label: 'CHARACTER_IN',
+            id: `${char.marvelId}${comic.marvelId}CHARACTER_IN`
+          })
+          if(comic.next_issue)  {
+            nodes.push({
+              id: comic.next_issue.marvelId,
+              title: comic.next_issue.title,
+              __typename: comic.next_issue.__typename
+            })
+
+            links.push({
+              source: comic.marvelId,
+              target: comic.next_issue.marvelId,
+              label: 'NEXT_ISSUE',
+              id: `${comic.marvelId}${comic.next_issue.marvelId}NEXT_ISSUE`
+            })
+          }
+        })
+      }
+    })
+  }
   return { nodes: _.uniqBy(nodes, "id"), links: _.uniqBy(links, "id")}
 }
 
@@ -362,6 +501,19 @@ export default function Home() {
     }
   )
 
+  const [expandCharacter, {calledXCharacter, loadingXCharacter, dataXCharacter: newDataXCharacter}]  = useLazyQuery(
+    expandQuery.expandCharacter,
+    {
+      onCompleted: (dataXCharacter) =>  {
+        const newSubgraph = formatData(dataXCharacter)
+        setGraphData({
+          nodes: _.uniqBy([...graphData.nodes, ...newSubgraph.nodes], "id"),
+          links: _.uniqBy([...graphData.links, ...newSubgraph.links], "id")
+        })
+      }
+    }
+  )
+
   useEffect(()  =>  {
     setWidth(window.innerWidth*.9)
   }, [])
@@ -381,6 +533,9 @@ export default function Home() {
                   }
                   if(node.__typename === "Series")  {
                     return 20
+                  } 
+                  if(node.__typename === "Character") {
+                    return 75
                   } else  {
                     return 5
                   }
@@ -395,6 +550,9 @@ export default function Home() {
                   }
                   if(node.__typename === "Series")  {
                     expandSeries({variables: {seriesName: node.title}})
+                  }
+                  if(node.__typename === "Character") {
+                    expandCharacter({variables: {characterName: node.title}})
                   }
                 }}
                 linkDirectionalArrowLength={3.5}
