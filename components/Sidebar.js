@@ -38,16 +38,10 @@ const Sidebar = (props)  =>  {
                 }}
                 value={props.comicTitle}
                 placeholder="Comic Title Contains"></Input>
-            <Input 
-                onChange={(e) => {
-                    props.setComicLimit(e.target.value)
-                }}
-                value={props.comicLimit}
-                placeholder="Limit Results"></Input>
             <Submit onClick={() =>  {
                 console.log("hello")
                 console.log(props.newComics())
-                props.newComics({variables: {limit: props.comicLimit, comicTitle: props.comicTitle}})}}>Submit</Submit>
+                props.newComics({variables: {comicTitle: props.comicTitle}})}}>Submit</Submit>
         </Container>
     )
 }
