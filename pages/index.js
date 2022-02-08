@@ -387,9 +387,9 @@ export default function Home() {
                 }}
                 onNodeClick={(node, event) => {
                   console.log(event)
-                  // if(node.__typename === "Comic")  {
-                  //   expandComic({variables: {comicTitle: node.title}})
-                  // }
+                  if(node.__typename === "Comic")  {
+                    expandComic({variables: {comicTitle: node.title}})
+                  }
                   if(node.__typename === "Creator")  {
                     expandCreator({variables: {creatorName: node.name}})
                   }
